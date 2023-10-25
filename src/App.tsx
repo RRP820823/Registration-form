@@ -97,6 +97,7 @@ const TextInput: React.FC<{
 }
 
 // RegistrationForm Component
+// New Comment
 
 type Props = {
   firstName: string
