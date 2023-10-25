@@ -1,40 +1,50 @@
 // RegistrationForm.js
 
-import "./App.css"
-import React, { useState, ChangeEvent, useEffect } from "react"
-import styled from "styled-components"
-import { AiOutlineMail, AiOutlineCheck } from "react-icons/ai"
-import Container from "./Components/Container"
-import { StyledError } from "./Components/Styles"
-import { StyledEror } from "./Components/Error"
+import "./App.css";
+import Location from "./Components/Location";
+import React, { useState, ChangeEvent } from "react";
+import styled from "styled-components";
+import { AiOutlineMail, AiOutlineCheck } from "react-icons/ai";
+import Container from "./Components/Container";
+// import { StyledError } from "./Components/Styles";
+import { StyledEror } from "./Components/Error";
 
 // Styled Components
 const FormContainer = styled.form`
   max-width: 500px;
   margin: 0 auto;
-`
+`;
 
 const FlexContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  /* border: 1px solid black; */
   margin-bottom: 15px;
-`
+  width: 100%;
+`;
 
-const InputContainer = styled.div`
-  /* position: relative; */
+const InputContainer = styled.div<{ name?: any }>`
   /* flex: 1;
   margin-right: 10px; */
   border: 1px solid #ccc;
   display: flex;
   align-items: center;
-`
+  width: 100%;
+  justify-content: space-between;
+  width: ${(props) =>
+    props.name === "firstName" || props.name === "lastName" ? "225px" : "fit"};
+  /* width: ${(props) =>
+    props.name === "firstName" || props.name === "lastName"
+      ? "50%"
+      : "100%"}; */
+`;
 
 const Label = styled.label`
   margin-bottom: 5px;
   display: block;
   flex: 1;
   height: 100%;
-`
+`;
 
 const Input = styled.input<{ icon?: any }>`
   width: ${(props) =>
@@ -42,22 +52,22 @@ const Input = styled.input<{ icon?: any }>`
   padding: 8px;
   border: none;
   outline: none;
-`
+`;
 
 // TextInput Component
 const TextInput: React.FC<{
-  label?: string
-  value?: any
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
-  type: "text" | "checkbox" | "checkbox" | "radio" | "tel" | "date" | "number"
-  icon?: React.ReactNode
-  placeholder?: string
-  hideLabel?: any
-  name?: any
-  id?: any
-  min?: any
-  max?: any
-  required?: any
+  label?: string;
+  value?: any;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  type: "text" | "checkbox" | "checkbox" | "radio" | "tel" | "date" | "number";
+  icon?: React.ReactNode;
+  placeholder?: string;
+  hideLabel?: any;
+  name?: any;
+  id?: any;
+  min?: any;
+  max?: any;
+  required?: any;
 }> = ({
   label,
   value,
@@ -73,42 +83,40 @@ const TextInput: React.FC<{
   required,
 }) => {
   return (
-    <div>
-      <InputContainer>
-        {icon ? icon : null}
-        <Input
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          icon={icon}
-          id={id}
-          name={name}
-          min={5}
-          max={10}
-          // required
-        />
-        {type === "radio" || type === "checkbox" ? (
-          <Label htmlFor={id}> {label}</Label>
-        ) : null}
-      </InputContainer>
-    </div>
-  )
-}
+    <InputContainer name={name}>
+      {icon ? icon : null}
+      <Input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        icon={icon}
+        id={id}
+        name={name}
+        min={5}
+        max={10}
+        // required
+      />
+      {type === "radio" || type === "checkbox" ? (
+        <Label htmlFor={id}> {label}</Label>
+      ) : null}
+    </InputContainer>
+  );
+};
 
 // RegistrationForm Component
 // New Comment
 
 type Props = {
-  firstName: string
-  lastName: string
-  platform: string
-  isChecked: boolean
-  Telephone: string | number | any
-  Email: string
-  Address: string
-  "Date of Birth": any
-}
+  firstName: string;
+  lastName: string;
+  platform: string;
+  isChecked: boolean;
+  Telephone: string | number | any;
+  Email: string;
+  Address: string;
+  "Date of Birth": any;
+};
 const RegistrationForm: React.FC = () => {
   const [formData, setFormData] = useState<Props>({
     firstName: "",
@@ -119,85 +127,86 @@ const RegistrationForm: React.FC = () => {
     Email: "",
     Address: "",
     "Date of Birth": "",
-  })
+  });
 
-  const [error, setError] = useState<any>({})
+  const [error, setError] = useState<any>({});
 
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
-  // useEffect(() => {
+  console.log("formData", formData);
+  console.log("error", error);
 
-  // }, [formData])
-  console.log("formData", formData)
-  console.log("error", error)
-
-  console.log("submitting", submitting.toString())
+  console.log("submitting", submitting.toString());
 
   let handelChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   let handelCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.checked })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.checked });
+  };
 
   function handelSubmit(e: React.FormEvent): void {
-    e.preventDefault() // Prevents the form from submitting and triggering a page reload
+    e.preventDefault(); // Prevents the form from submitting and triggering a page reload
 
-    const newErrors: { [key: string]: string } = {}
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.firstName) {
-      newErrors.firstName = "First Name is missing"
+      newErrors.firstName = "First Name is missing";
     }
 
     if (!formData.Address) {
-      newErrors.Address = "Address  is missing"
+      newErrors.Address = "Address  is missing";
     }
 
     if (!formData.lastName) {
-      newErrors.lastName = "last Name is missing"
+      newErrors.lastName = "last Name is missing";
     }
 
     if (!formData.Email) {
-      newErrors.Email = "Email is missing"
+      newErrors.Email = "Email is missing";
     } else if (!isValidEmail(formData.Email)) {
-      newErrors.Email = "Invalid Email format"
+      newErrors.Email = "Invalid Email format";
     }
 
     if (!formData.Telephone) {
-      newErrors.Telephone = "Telephone is missing"
+      newErrors.Telephone = "Telephone is missing";
     } else if (formData.Telephone.length > 10) {
-      newErrors.Telephone = "Telephone should not be greater than 10"
+      newErrors.Telephone = "Telephone should not be greater than 10";
     } else if (!isValidTelephone(formData.Telephone)) {
-      newErrors.Telephone = "Invalid Telephone format"
+      newErrors.Telephone = "Invalid Telephone format";
     }
 
     if (!formData.isChecked) {
-      newErrors.isChecked = "isChecked  is missing"
+      newErrors.isChecked = "isChecked  is missing";
     }
 
     if (!formData.platform) {
-      newErrors.platform = "platform  is missing"
+      newErrors.platform = "platform  is missing";
     }
     if (!formData["Date of Birth"]) {
-      newErrors["Date of Birth"] = " Date of Birth is missing"
+      newErrors["Date of Birth"] = " Date of Birth is missing";
     }
-    setError(newErrors)
 
-    if (Object.keys(error).length === 0 && submitting === true) {
-      setSubmitting(true)
-    }
+    setError(newErrors);
+
+    setError((prevError: {}) => {
+      if (Object.keys(prevError).length === 0) {
+        setSubmitting(true);
+      }
+      return prevError;
+    });
   }
 
   function isValidEmail(email: string): boolean {
-    return email.includes("@")
+    return email.includes("@");
   }
 
   function isValidTelephone(telephone: string): boolean {
     // Implement your telephone validation logic here
     // For a simple example, check if it contains only numbers
 
-    return /^\d+$/.test(telephone)
+    return /^\d+$/.test(telephone);
   }
   return (
     <>
@@ -249,7 +258,9 @@ const RegistrationForm: React.FC = () => {
             <StyledEror errorMesage={error.Email} />
           )}
         </Container>
-
+        <Container>
+          <Location></Location>
+        </Container>
         <Container label="Telephone">
           <TextInput
             label="Telephone"
@@ -293,8 +304,6 @@ const RegistrationForm: React.FC = () => {
             <StyledEror errorMesage={error["Date of Birth"]} />
           )}
         </Container>
-
-        {/* <Container label="6. Where did you hear about us?"> */}
 
         <Container
           label="6.
@@ -340,12 +349,12 @@ Where did you hear about us?"
           )}
         </Container>
 
-        {/* </Container> */}
-
         <button type="submit">Submit</button>
       </FormContainer>
     </>
-  )
-}
+  );
+};
 
-export default RegistrationForm
+export default RegistrationForm;
+
+export { TextInput };
