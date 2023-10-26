@@ -23,7 +23,7 @@
 
 interface StyledErrorProps {
   children?: React.ReactNode;
-  name: string;
+  name?: string;
 }
 
 const StyledError: React.FC<StyledErrorProps> = ({ children }) => (
