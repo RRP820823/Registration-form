@@ -11,16 +11,16 @@ import { StyledEror } from "./Components/Error";
 
 // Styled Components
 const FormContainer = styled.form`
-  max-width: 500px;
   margin: 0 auto;
+  max-width: 750px;
 `;
 
 const FlexContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* border: 1px solid black; */
-  margin-bottom: 15px;
-  width: 100%;
+  /* margin-bottom: 15px; */
+  /* width: 100%; */
 `;
 
 const InputContainer = styled.div<{ name?: any }>`
@@ -30,13 +30,24 @@ const InputContainer = styled.div<{ name?: any }>`
   display: flex;
   align-items: center;
   width: 100%;
+  border-color: #313131;
+  /* background-color: #f6d9d5; */
+  min-height: 47px;
+  line-height: 1.3em;
+  box-shadow: none;
   justify-content: space-between;
-  width: ${(props) =>
-    props.name === "firstName" || props.name === "lastName" ? "225px" : "fit"};
+  margin-right: 11px;
+
+  /* width: ${(props) =>
+    props.name === "firstName" || props.name === "lastName" ? "100%" : null}; */
   /* width: ${(props) =>
     props.name === "firstName" || props.name === "lastName"
       ? "50%"
       : "100%"}; */
+
+  /* margin: 0; */
+  padding: 0;
+  box-sizing: border-box;
 `;
 
 const Label = styled.label`
@@ -49,6 +60,7 @@ const Label = styled.label`
 const Input = styled.input<{ icon?: any }>`
   width: ${(props) =>
     props.type === "checkbox" || props.type === "radio" ? "40px" : "100%"};
+
   padding: 8px;
   border: none;
   outline: none;
@@ -267,7 +279,7 @@ const RegistrationForm: React.FC = () => {
             onChange={handelChange}
             type="tel"
             name="Telephone"
-            icon={<AiOutlineCheck />}
+            // icon={<AiOutlineCheck />}
             placeholder="Telephone"
           />
 
@@ -282,7 +294,7 @@ const RegistrationForm: React.FC = () => {
             onChange={handelChange}
             type="text"
             name="Address"
-            icon={<AiOutlineCheck />}
+            // icon={<AiOutlineCheck />}
             placeholder="Address"
           />
 
@@ -297,7 +309,7 @@ const RegistrationForm: React.FC = () => {
             onChange={handelChange}
             type="date"
             name="Date of Birth"
-            icon={<AiOutlineCheck />}
+            // icon={<AiOutlineCheck />}
             placeholder="Date of Birth"
           />
           {Object.keys(error).length > 0 && (

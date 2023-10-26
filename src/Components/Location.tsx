@@ -12,6 +12,7 @@ const Location: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState<{ isoCode?: any }>({});
   const [selectedState, setSelectedState] = useState<{ isoCode?: any }>({});
   const [selectedCity, setSelectedCity] = useState<{ isoCode?: any }>({});
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     let CurrentCountry: any = Country.getAllCountries().find(
       (c) => c.name === event?.currentTarget?.value
@@ -38,12 +39,12 @@ const Location: React.FC = () => {
     setSelectedCity(CurrentCity);
   };
 
-  //   useEffect(() => {
-  //     console.log("selectedCountry", selectedCountry);
-  //     console.log("selectedState", selectedState);
-  //     console.log("selectedCity", selectedCity);
-  //     return () => console.clear();
-  //   });
+  useEffect(() => {
+    console.log("selectedCountry", selectedCountry);
+    console.log("selectedState", selectedState);
+    console.log("selectedCity", selectedCity);
+    return () => console.clear();
+  });
 
   //   console.log(Country.getAllCountries());
 
@@ -78,7 +79,7 @@ const Location: React.FC = () => {
         <select id="City" onChange={handleCityChange}>
           {City.getCitiesOfState(
             selectedCountry?.isoCode,
-            selectedState.isoCode
+            selectedState?.isoCode
           ).map((city: any) => (
             <>
               <option value={city.name}>{city.name}</option>
