@@ -2,22 +2,28 @@
 
 import "./App.css";
 import Location from "./Components/Location";
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
-import { AiOutlineMail, AiOutlineCheck } from "react-icons/ai";
+import { AiOutlineMail } from "react-icons/ai";
 import Container from "./Components/Container";
-// import { StyledError } from "./Components/Styles";
-import { StyledEror } from "./Components/Error";
+
+import { Formik } from "formik";
+import { ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { StyledError } from "./Components/Error";
 
 //made changes
 // Styled Components
-const FormContainer = styled.form`
+const FormContainer = styled.form<{ onChange?: any }>`
   margin: 0 auto;
   max-width: 750px;
 `;
 
 const FlexContainer = styled.div`
   display: flex;
+  :last-child {
+    margin-right: 0;
+  }
   /* justify-content: space-between; */
   /* border: 1px solid black; */
   /* margin-bottom: 15px; */
@@ -37,7 +43,7 @@ const InputContainer = styled.div<{ name?: any }>`
   line-height: 1.3em;
   box-shadow: none;
   justify-content: space-between;
-  margin-right: 11px;
+  margin-right: 14px;
 
   /* width: ${(props) =>
     props.name === "firstName" || props.name === "lastName" ? "100%" : null}; */
@@ -72,7 +78,15 @@ const TextInput: React.FC<{
   label?: string;
   value?: any;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  type: "text" | "checkbox" | "checkbox" | "radio" | "tel" | "date" | "number";
+  type?:
+    | "text"
+    | "checkbox"
+    | "checkbox"
+    | "radio"
+    | "tel"
+    | "date"
+    | "number"
+    | any;
   icon?: React.ReactNode;
   placeholder?: string;
   hideLabel?: any;
@@ -81,6 +95,7 @@ const TextInput: React.FC<{
   min?: any;
   max?: any;
   required?: any;
+  onBlur?: any;
 }> = ({
   label,
   value,
@@ -120,250 +135,218 @@ const TextInput: React.FC<{
 // RegistrationForm Component
 // New Comment
 
-type Props = {
+interface MyFormValues {
   firstName: string;
   lastName: string;
-  platform: string;
-  isChecked: boolean;
-  Telephone: string | number | any;
-  Email: string;
+  email: string;
+  location: {
+    city: any;
+    country: any;
+    state: any;
+  };
+  platform: "";
+  Telephone: any;
   Address: string;
-  "Date of Birth": any;
-};
+  "Date of Birth": {};
+  isChecked: boolean;
+}
 const RegistrationForm: React.FC = () => {
-  const [formData, setFormData] = useState<Props>({
+  const [checkBoxvalues] = React.useState([
+    "A Friend or colleague",
+    "Google",
+    "Article News",
+    "Blog Post",
+    "Other",
+  ]);
+  const initialValues: MyFormValues = {
     firstName: "",
     lastName: "",
+    email: "",
+    location: {
+      city: "",
+      country: "",
+      state: "",
+    },
     platform: "",
-    isChecked: false,
     Telephone: "",
-    Email: "",
     Address: "",
     "Date of Birth": "",
+    isChecked: false,
+  };
+
+  let validationSchema = Yup.object({
+    firstName: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+    lastName: Yup.string()
+      .max(20, "Must be 20 characters or less")
+      .required("Required"),
+    email: Yup.string().email("Invalid email address").required("Required"),
+    location: Yup.object().shape({
+      city: Yup.string().required("city is required"),
+      country: Yup.string().required("country is required"),
+      state: Yup.string().required("state is required"),
+    }),
+
+    Telephone: Yup.string()
+      .required("number is required")
+      .max(10, "must not be greater than 10"),
+
+    isChecked: Yup.boolean().oneOf([true], "Must be checked "),
+    Address: Yup.string().required("address is required "),
+    "Date of Birth": Yup.string().required("please enter Date"),
+    // platform: Yup.object().shape({
+    //   checkBoxvalues: Yup.array().min(1).of(Yup.string().required()),
+    // }),
+
+    // platform: Yup.string().required("please select platform "),
+
+    platform: Yup.string()
+      .required("Must Accept Terms and Conditions")
+      .oneOf([...checkBoxvalues], "Must Accept Terms and Conditions"),
   });
 
-  const [error, setError] = useState<any>({});
-
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
-  console.log("formData", formData);
-  console.log("error", error);
-
-  console.log("submitting", submitting.toString());
-
-  let handelChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  let handelCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.checked });
-  };
-
-  function handelSubmit(e: React.FormEvent): void {
-    e.preventDefault(); // Prevents the form from submitting and triggering a page reload
-
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.firstName) {
-      newErrors.firstName = "First Name is missing";
-    }
-
-    if (!formData.Address) {
-      newErrors.Address = "Address  is missing";
-    }
-
-    if (!formData.lastName) {
-      newErrors.lastName = "last Name is missing";
-    }
-
-    if (!formData.Email) {
-      newErrors.Email = "Email is missing";
-    } else if (!isValidEmail(formData.Email)) {
-      newErrors.Email = "Invalid Email format";
-    }
-
-    if (!formData.Telephone) {
-      newErrors.Telephone = "Telephone is missing";
-    } else if (formData.Telephone.length > 10) {
-      newErrors.Telephone = "Telephone should not be greater than 10";
-    } else if (!isValidTelephone(formData.Telephone)) {
-      newErrors.Telephone = "Invalid Telephone format";
-    }
-
-    if (!formData.isChecked) {
-      newErrors.isChecked = "isChecked  is missing";
-    }
-
-    if (!formData.platform) {
-      newErrors.platform = "platform  is missing";
-    }
-    if (!formData["Date of Birth"]) {
-      newErrors["Date of Birth"] = " Date of Birth is missing";
-    }
-
-    setError(newErrors);
-
-    setError((prevError: {}) => {
-      if (Object.keys(prevError).length === 0) {
-        setSubmitting(true);
-      }
-      return prevError;
-    });
-  }
-
-  function isValidEmail(email: string): boolean {
-    return email.includes("@");
-  }
-
-  function isValidTelephone(telephone: string): boolean {
-    // Implement your telephone validation logic here
-    // For a simple example, check if it contains only numbers
-
-    return /^\d+$/.test(telephone);
-  }
   return (
     <>
-      {submitting ? <p>form submitted</p> : null}
-      <FormContainer onSubmit={handelSubmit}>
-        <Container label="Name">
-          <FlexContainer>
-            <TextInput
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handelChange}
-              type="text"
-              label="Name"
-              name="firstName"
-            />
-            <TextInput
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handelChange}
-              type="text"
-              name="lastName"
-              hideLabel
-            />
-          </FlexContainer>
+      {/* {submitting ? <p>form submitted</p> : null} */}
 
-          <div style={{ display: "flex", gap: "10px" }}>
-            {Object.keys(error).length > 0 && error.firstName !== "" && (
-              <StyledEror errorMesage={error.firstName} />
-            )}
-            {Object.keys(error).length > 0 && (
-              <StyledEror errorMesage={error.lastName} />
-            )}
-          </div>
-          {/* <StyledError style={{}}>{error.firstName}</StyledError> */}
-        </Container>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log("Sumitted");
+          console.log(values);
+        }}
+      >
+        {(formik) => {
+          return (
+            // strory start
 
-        <Container label="E-mail">
-          <TextInput
-            label={"E-mail"}
-            onChange={handelChange}
-            type="text"
-            name="Email"
-            icon={<AiOutlineMail />}
-            placeholder="E-mail"
-          />
-          <div>{error.Email}</div>
-
-          {Object.keys(error).length > 0 && error.Email !== "" && (
-            <StyledEror errorMesage={error.Email} />
-          )}
-        </Container>
-        <Container>
-          <Location></Location>
-        </Container>
-        <Container label="Telephone">
-          <TextInput
-            label="Telephone"
-            onChange={handelChange}
-            type="tel"
-            name="Telephone"
-            // icon={<AiOutlineCheck />}
-            placeholder="Telephone"
-          />
-
-          {Object.keys(error).length > 0 && (
-            <StyledEror errorMesage={error.Telephone} />
-          )}
-        </Container>
-
-        <Container label="4.Address">
-          <TextInput
-            label="Address"
-            onChange={handelChange}
-            type="text"
-            name="Address"
-            // icon={<AiOutlineCheck />}
-            placeholder="Address"
-          />
-
-          {Object.keys(error).length > 0 && (
-            <StyledEror errorMesage={error.Address} />
-          )}
-        </Container>
-
-        <Container label=" 5.Date of Birth">
-          <TextInput
-            label="Date of Birth"
-            onChange={handelChange}
-            type="date"
-            name="Date of Birth"
-            // icon={<AiOutlineCheck />}
-            placeholder="Date of Birth"
-          />
-          {Object.keys(error).length > 0 && (
-            <StyledEror errorMesage={error["Date of Birth"]} />
-          )}
-        </Container>
-
-        <Container
-          label="6.
-Where did you hear about us?"
-        >
-          {[
-            "A Friend or colleague",
-            "Google",
-            "Article News",
-            "Blog Post",
-            "Other",
-          ].map((v) => (
             <>
-              <TextInput
-                label={v}
-                value={v}
-                id={v}
-                onChange={handelChange}
-                type="radio"
-                name="platform"
-              />
+              {console.log(formik)}
+              <FormContainer onSubmit={formik.handleSubmit}>
+                <pre>{JSON.stringify(formik.values)}</pre>
+                <Container label="Name">
+                  <FlexContainer>
+                    <TextInput
+                      placeholder="First Name"
+                      type="text"
+                      label="Name"
+                      name="firstName"
+                      value={formik.values.firstName}
+                      onChange={formik.handleChange}
+                    />
+                    <TextInput
+                      value={formik.values.lastName}
+                      onChange={formik.handleChange}
+                      placeholder="Last Name"
+                      type="text"
+                      name="lastName" // onBlur={formik.handleBlur}
+                      hideLabel
+                    />
+                  </FlexContainer>
+                  <ErrorMessage name="lastName">
+                    {(msg) => <StyledError name={msg}>{msg}</StyledError>}
+                  </ErrorMessage>
+                  {/* <ErrorMessage component={StyledError} name="lastName" /> */}
+                </Container>
+
+                <Container label="E-mail">
+                  <TextInput
+                    label={"E-mail"}
+                    onChange={formik.handleChange}
+                    type="text"
+                    name="email"
+                    icon={<AiOutlineMail />}
+                    placeholder="E-mail"
+                  />
+                  <ErrorMessage component="div" name="email" />
+                </Container>
+                <Container label="Location">
+                  <Location formik={formik}></Location>
+                </Container>
+                <Container label="Telephone">
+                  <TextInput
+                    label="Telephone"
+                    onChange={formik.handleChange}
+                    type="tel"
+                    name="Telephone"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Telephone"
+                  />
+                  <ErrorMessage component="div" name="Telephone" />
+                </Container>
+
+                <Container label="4.Address">
+                  <TextInput
+                    label="Address"
+                    onChange={formik.handleChange}
+                    type="text"
+                    name="Address"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Address"
+                  />
+
+                  <ErrorMessage component="div" name="Address" />
+                </Container>
+
+                <Container label=" 5.Date of Birth">
+                  <TextInput
+                    label="Date of Birth"
+                    onChange={formik.handleChange}
+                    type="date"
+                    name="Date of Birth"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Date of Birth"
+                  />
+                  <ErrorMessage component="div" name="Date of Birth" />
+                </Container>
+
+                <Container
+                  label="6.
+Where did you hear about us?"
+                >
+                  {checkBoxvalues.map((v) => (
+                    <>
+                      <TextInput
+                        label={v}
+                        value={v}
+                        id={v}
+                        onChange={formik.handleChange}
+                        type="radio"
+                        name="platform"
+                      />
+                    </>
+                  ))}
+
+                  <ErrorMessage component="div" name="platform" />
+                </Container>
+
+                <Container>
+                  <TextInput
+                    placeholder="First Name"
+                    value={formik.values.isChecked}
+                    onChange={formik.handleChange}
+                    type="checkbox"
+                    name="isChecked"
+                    id="checkbox-id" // Add a unique id for the checkbox
+                    label="I have read, understood, and accepted the PRIVACY POLICY for membership. "
+                  />
+
+                  <ErrorMessage component="div" name="isChecked" />
+                </Container>
+
+                <TextInput
+                  placeholder="submit"
+                  type="submit"
+                  name="lastName" // onBlur={formik.handleBlur}
+                />
+              </FormContainer>
             </>
-          ))}
-
-          {Object.keys(error).length > 0 && (
-            <StyledEror errorMesage={error.platform} />
-          )}
-        </Container>
-
-        <Container>
-          <TextInput
-            placeholder="First Name"
-            value={formData.isChecked}
-            onChange={handelCheckBoxChange}
-            type="checkbox"
-            name="isChecked"
-            id="checkbox-id" // Add a unique id for the checkbox
-            label="I have read, understood, and accepted the PRIVACY POLICY for membership. "
-          />
-
-          {Object.keys(error).length > 0 && (
-            <StyledEror errorMesage={error.isChecked} />
-          )}
-        </Container>
-
-        <button type="submit">Submit</button>
-      </FormContainer>
+            //start of the form
+          );
+        }}
+      </Formik>
     </>
   );
 };

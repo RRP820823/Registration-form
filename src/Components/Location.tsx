@@ -1,5 +1,5 @@
 import { Country, State, City } from "country-state-city";
-import React, { useEffect, useState } from "react";
+
 // import { TextInput } from "../App";
 import {
   StyledLabel,
@@ -8,84 +8,61 @@ import {
   StyledOption,
   StyledSelect,
 } from "./Styles";
-const Location: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<{ isoCode?: any }>({});
-  const [selectedState, setSelectedState] = useState<{ isoCode?: any }>({});
-  const [selectedCity, setSelectedCity] = useState<{ isoCode?: any }>({});
+import { ErrorMessage } from "formik";
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    let CurrentCountry: any = Country.getAllCountries().find(
-      (c) => c.name === event?.currentTarget?.value
-    );
-    setSelectedCountry(CurrentCountry);
-  };
-
-  const handleStateChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    let CurrentState: any = State.getStatesOfCountry(
-      selectedCountry?.isoCode
-    ).find((s) => s.name === event?.currentTarget?.value);
-    setSelectedState(CurrentState);
-  };
-
-  const handleCityChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    let CurrentCity: any = City.getCitiesOfState(
-      selectedCountry?.isoCode,
-      selectedState.isoCode
-    ).find((c) => c.name === event?.currentTarget?.value);
-    setSelectedCity(CurrentCity);
-  };
-
-  useEffect(() => {
-    console.log("selectedCountry", selectedCountry);
-    console.log("selectedState", selectedState);
-    console.log("selectedCity", selectedCity);
-    return () => console.clear();
-  });
-
-  //   console.log(Country.getAllCountries());
-
+interface LocationProps {
+  formik?: any;
+}
+const Location: React.FC<LocationProps> = ({ formik }) => {
   return (
     <Wrapper>
       <SelectBox>
         <StyledLabel htmlFor="Country">Choose a Country:</StyledLabel>
-        <StyledSelect id="Country" onChange={handleChange}>
+        <StyledSelect
+          name="location.country"
+          id="Country"
+          onChange={formik.handleChange}
+        >
+          <option> </option>
           {Country.getAllCountries().map((country: any) => (
             <>
-              <StyledOption value={country.name}>{country.name}</StyledOption>
+              <StyledOption value={country.isoCode}>
+                {country.name}
+              </StyledOption>
             </>
           ))}
         </StyledSelect>
+        <ErrorMessage component="div" name="location.country" />{" "}
+        {/* Corrected name prop */}
       </SelectBox>
 
       <SelectBox>
         <label htmlFor="State">Choose a State:</label>
-        <select id="State" onChange={handleStateChange}>
-          {State.getStatesOfCountry(selectedCountry?.isoCode).map(
+        <select name="location.state" id="State" onChange={formik.handleChange}>
+          {State.getStatesOfCountry(formik.values.location.country).map(
             (state: any) => (
               <>
-                <option value={state.name}>{state.name}</option>
+                <option value={state.isoCode}>{state.name}</option>
               </>
             )
           )}
         </select>
+        <ErrorMessage component="div" name="location.state" />
       </SelectBox>
 
       <SelectBox>
         <label htmlFor="City">Choose a City:</label>
-        <select id="City" onChange={handleCityChange}>
+        <select name="location.city" id="City" onChange={formik.handleChange}>
           {City.getCitiesOfState(
-            selectedCountry?.isoCode,
-            selectedState?.isoCode
+            formik.values.location.country,
+            formik.values.location.state
           ).map((city: any) => (
             <>
               <option value={city.name}>{city.name}</option>
             </>
           ))}
         </select>
+        <ErrorMessage component="div" name="location.city" />{" "}
       </SelectBox>
     </Wrapper>
   );

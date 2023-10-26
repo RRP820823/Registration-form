@@ -3,9 +3,13 @@
 export default function Container({
   children,
   label,
+  formik,
+  onChange,
 }: {
-  children?: React.ReactNode
-  label?: string
+  children?: React.ReactNode;
+  label?: string;
+  formik?: any;
+  onChange?: any;
 }) {
   return (
     <div
@@ -23,5 +27,5 @@ export default function Container({
         {children}
       </div>
     </div>
-  )
+  );
 }
