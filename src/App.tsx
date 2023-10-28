@@ -1,37 +1,40 @@
-// RegistrationForm.js
-
 import "./App.css";
 import Location from "./Components/Location";
+
 import React, { useState, ChangeEvent } from "react";
 import styled from "styled-components";
-import { AiOutlineMail, AiOutlineCheck } from "react-icons/ai";
+import { AiOutlineMail } from "react-icons/ai";
 import Container from "./Components/Container";
-// import { StyledError } from "./Components/Styles";
+
+import { BsTelephone } from "react-icons/bs";
+import { CiLocationOn } from "react-icons/ci";
 import { StyledEror } from "./Components/Error";
 
-//made changes
+//  made changes
 // Styled Components
 const FormContainer = styled.form`
   margin: 0 auto;
   max-width: 750px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 `;
 
 const FlexContainer = styled.div`
   display: flex;
-  /* justify-content: space-between; */
-  /* border: 1px solid black; */
-  /* margin-bottom: 15px; */
-  /* width: 100%; */
+  :last-child {
+    margin: 0;
+  }
 `;
 
 const InputContainer = styled.div<{ name?: any }>`
-  /* flex: 1;
-  margin-right: 10px; */
   border: 1px solid #ccc;
   display: flex;
   align-items: center;
   width: 100%;
   border-color: #313131;
+
   /* background-color: #f6d9d5; */
   min-height: 47px;
   line-height: 1.3em;
@@ -51,28 +54,84 @@ const InputContainer = styled.div<{ name?: any }>`
   box-sizing: border-box;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ type?: string }>`
   margin-bottom: 5px;
-  display: block;
+  display: flex;
   flex: 1;
   height: 100%;
+  color: black;
 `;
+
+const SubmitButton = styled.button`
+  color: #fff;
+  font-weight: 700;
+  min-width: 9.2em;
+  border-radius: 0 !important;
+  background-color: #313131 !important;
+  min-height: 3.4em;
+`;
+// const Input = styled.input<{ icon?: any }>`
+//   width: ${(props) =>
+//     props.type === "checkbox" || props.type === "radio" ? "40px" : "100%"};
+//   padding: 8px;
+//   border: none;
+//   outline: none;
+//   background-color: transparent;
+//   margin: ${(props) => props.type === "checkbox" && "10px"};
+// `;
 
 const Input = styled.input<{ icon?: any }>`
   width: ${(props) =>
     props.type === "checkbox" || props.type === "radio" ? "40px" : "100%"};
-
   padding: 8px;
   border: none;
   outline: none;
+  background-color: transparent; // Ensure transparent background
+  margin: ${(props) => props.type === "checkbox" && "10px"};
+  appearance: ${(props) => props.type === "checkbox" && "none"};
+  background: ${(props) => props.type === "checkbox" && "red"};
+  -webkit-appearance: ${(props) => props.type === "checkbox" && "none"};
+  background-color: #f7d0cb;
+  cursor: ${(props) => props.type === "checkbox" && "none"};
 `;
+
+//  Icon wrapper
+
+const StytedIcon = styled.div<{ type?: any }>`
+  width: 3em;
+  height: 3.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid black; */
+  background-color: transparent; // Add this line
+`;
+
+function IconWrappeer({
+  children,
+  type,
+}: {
+  children?: React.ReactNode;
+  type?: string;
+}) {
+  return <StytedIcon>{children}</StytedIcon>;
+}
 
 // TextInput Component
 const TextInput: React.FC<{
+  showIcon?: boolean;
   label?: string;
   value?: any;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  type: "text" | "checkbox" | "checkbox" | "radio" | "tel" | "date" | "number";
+  type:
+    | "text"
+    | "checkbox"
+    | "checkbox"
+    | "radio"
+    | "tel"
+    | "date"
+    | "number"
+    | "submit";
   icon?: React.ReactNode;
   placeholder?: string;
   hideLabel?: any;
@@ -82,6 +141,7 @@ const TextInput: React.FC<{
   max?: any;
   required?: any;
 }> = ({
+  showIcon,
   label,
   value,
   id,
@@ -97,7 +157,8 @@ const TextInput: React.FC<{
 }) => {
   return (
     <InputContainer name={name}>
-      {icon ? icon : null}
+      {icon ? <IconWrappeer>{icon}</IconWrappeer> : null}
+
       <Input
         type={type}
         value={value}
@@ -108,17 +169,45 @@ const TextInput: React.FC<{
         name={name}
         min={5}
         max={10}
-        // required
+        required
       />
-      {type === "radio" || type === "checkbox" ? (
-        <Label htmlFor={id}> {label}</Label>
-      ) : null}
+      {/* {type === "radio" || type === "checkbox" ? (
+        <>
+          <Label type={type} htmlFor={id}>
+            {label}
+          </Label>
+        </>
+      ) : null} */}
+
+      {type === "radio" && (
+        <>
+          <Label type={type} htmlFor={id}>
+            {label}
+          </Label>
+        </>
+      )}
+
+      {type === "checkbox" && (
+        <>
+          <Label
+            style={{ display: "flex", gap: "10px" }}
+            type={type}
+            htmlFor={id}
+          >
+            <p>
+              {label}
+              <span>
+                <u>Terms and Condition</u>
+              </span>
+            </p>
+          </Label>
+        </>
+      )}
     </InputContainer>
   );
 };
 
 // RegistrationForm Component
-// New Comment
 
 type Props = {
   firstName: string;
@@ -142,6 +231,8 @@ const RegistrationForm: React.FC = () => {
     "Date of Birth": "",
   });
 
+  // const [startDate, setStartDate] = useState(new Date());
+
   const [error, setError] = useState<any>({});
 
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -160,7 +251,7 @@ const RegistrationForm: React.FC = () => {
   };
 
   function handelSubmit(e: React.FormEvent): void {
-    e.preventDefault(); // Prevents the form from submitting and triggering a page reload
+    e.preventDefault(); //Prevents the form from submitting and triggering a page reload
 
     const newErrors: { [key: string]: string } = {};
 
@@ -225,7 +316,7 @@ const RegistrationForm: React.FC = () => {
     <>
       {submitting ? <p>form submitted</p> : null}
       <FormContainer onSubmit={handelSubmit}>
-        <Container label="Name">
+        <Container label="1.Name">
           <FlexContainer>
             <TextInput
               placeholder="First Name"
@@ -256,7 +347,7 @@ const RegistrationForm: React.FC = () => {
           {/* <StyledError style={{}}>{error.firstName}</StyledError> */}
         </Container>
 
-        <Container label="E-mail">
+        <Container label="2.E-mail">
           <TextInput
             label={"E-mail"}
             onChange={handelChange}
@@ -274,13 +365,13 @@ const RegistrationForm: React.FC = () => {
         <Container>
           <Location></Location>
         </Container>
-        <Container label="Telephone">
+        <Container label="3.Telephone">
           <TextInput
             label="Telephone"
             onChange={handelChange}
             type="tel"
             name="Telephone"
-            // icon={<AiOutlineCheck />}
+            icon={<BsTelephone />}
             placeholder="Telephone"
           />
 
@@ -295,7 +386,7 @@ const RegistrationForm: React.FC = () => {
             onChange={handelChange}
             type="text"
             name="Address"
-            // icon={<AiOutlineCheck />}
+            icon={<CiLocationOn />}
             placeholder="Address"
           />
 
@@ -310,7 +401,7 @@ const RegistrationForm: React.FC = () => {
             onChange={handelChange}
             type="date"
             name="Date of Birth"
-            // icon={<AiOutlineCheck />}
+            showIcon={false}
             placeholder="Date of Birth"
           />
           {Object.keys(error).length > 0 && (
@@ -320,7 +411,7 @@ const RegistrationForm: React.FC = () => {
 
         <Container
           label="6.
-Where did you hear about us?"
+ Where did you hear about us?"
         >
           {[
             "A Friend or colleague",
@@ -353,8 +444,8 @@ Where did you hear about us?"
             onChange={handelCheckBoxChange}
             type="checkbox"
             name="isChecked"
-            id="checkbox-id" // Add a unique id for the checkbox
-            label="I have read, understood, and accepted the PRIVACY POLICY for membership. "
+            id="checkbox-id"
+            label="I have read, understood, and accepted the PRIVACY POLICY for membership "
           />
 
           {Object.keys(error).length > 0 && (
@@ -362,7 +453,9 @@ Where did you hear about us?"
           )}
         </Container>
 
-        <button type="submit">Submit</button>
+        <Container label="submit">
+          <SubmitButton type="submit">Submit</SubmitButton>
+        </Container>
       </FormContainer>
     </>
   );
