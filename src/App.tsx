@@ -26,6 +26,15 @@ const FlexContainer = styled.div`
   :last-child {
     margin: 0;
   }
+  @media (width < 768px) {
+    :last-child {
+      margin: 0;
+    }
+    :first-child {
+      margin: 0;
+    }
+    flex-direction: column;
+  }
 `;
 
 const InputContainer = styled.div<{ name?: any }>`
@@ -99,12 +108,24 @@ const Input = styled.input<{ icon?: any }>`
 
 const StytedIcon = styled.div<{ type?: any }>`
   width: 3em;
-  height: 3.5em;
+  /* height: 3.5em; */
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   /* border: 1px solid black; */
   background-color: transparent; // Add this line
+`;
+
+const Header = styled.header`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 750px;
+  width: 100%;
+  padding-bottom: 0;
+  margin-top: 1.7em;
+  margin: 40px auto;
 `;
 
 function IconWrappeer({
@@ -307,14 +328,17 @@ const RegistrationForm: React.FC = () => {
   }
 
   function isValidTelephone(telephone: string): boolean {
-    // Implement your telephone validation logic here
-    // For a simple example, check if it contains only numbers
-
     return /^\d+$/.test(telephone);
   }
   return (
     <>
       {submitting ? <p>form submitted</p> : null}
+
+      <Header>
+        <h3 style={{ fontSize: "1.6rem", fontWeight: "bold" }}>
+          Registration Form
+        </h3>
+      </Header>
       <FormContainer onSubmit={handelSubmit}>
         <Container label="1.Name">
           <FlexContainer>

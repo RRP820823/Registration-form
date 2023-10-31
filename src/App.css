@@ -56,6 +56,11 @@ input[type="checkbox"] + label {
   margin: 0.2em;
   cursor: pointer;
   padding: 0.2em;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 input[type="checkbox"] {
@@ -78,9 +83,9 @@ input[type="checkbox"] + label:before {
 }
 
 input[type="checkbox"]:checked + label:before {
-  background-color: #f7d0cb;
+  background-color: #0b0504;
 
-  color: #060201;
+  color: #f0e9e7;
 }
 
 input[type="checkbox"]:disabled + label:before {
