@@ -13,9 +13,17 @@ let StyledContainer = styled.div<{ label: string }>`
 export default function Container({
   children,
   label,
+  formik,
+  onChange,
 }: {
   children?: React.ReactNode;
+<<<<<<< HEAD
   label?: any;
+=======
+  label?: string;
+  formik?: any;
+  onChange?: any;
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
 }) {
   return (
     <StyledContainer label={label}>
@@ -23,6 +31,10 @@ export default function Container({
       <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
         {children}
       </div>
+<<<<<<< HEAD
     </StyledContainer>
+=======
+    </div>
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
   );
 }

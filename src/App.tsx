@@ -1,18 +1,29 @@
 import "./App.css";
 import Location from "./Components/Location";
+<<<<<<< HEAD
 
 import React, { useState, ChangeEvent } from "react";
+=======
+import React, { ChangeEvent } from "react";
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
 import styled from "styled-components";
 import { AiOutlineMail } from "react-icons/ai";
 import Container from "./Components/Container";
 
+<<<<<<< HEAD
 import { BsTelephone } from "react-icons/bs";
 import { CiLocationOn } from "react-icons/ci";
 import { StyledEror } from "./Components/Error";
+=======
+import { Formik } from "formik";
+import { ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { StyledError } from "./Components/Error";
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
 
 //  made changes
 // Styled Components
-const FormContainer = styled.form`
+const FormContainer = styled.form<{ onChange?: any }>`
   margin: 0 auto;
   max-width: 750px;
   width: 60%;
@@ -24,6 +35,7 @@ const FormContainer = styled.form`
 const FlexContainer = styled.div`
   display: flex;
   :last-child {
+<<<<<<< HEAD
     margin: 0;
   }
   @media (width < 768px) {
@@ -35,6 +47,14 @@ const FlexContainer = styled.div`
     }
     flex-direction: column;
   }
+=======
+    margin-right: 0;
+  }
+  /* justify-content: space-between; */
+  /* border: 1px solid black; */
+  /* margin-bottom: 15px; */
+  /* width: 100%; */
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
 `;
 
 const InputContainer = styled.div<{ name?: any }>`
@@ -49,7 +69,7 @@ const InputContainer = styled.div<{ name?: any }>`
   line-height: 1.3em;
   box-shadow: none;
   justify-content: space-between;
-  margin-right: 11px;
+  margin-right: 14px;
 
   /* width: ${(props) =>
     props.name === "firstName" || props.name === "lastName" ? "100%" : null}; */
@@ -144,7 +164,11 @@ const TextInput: React.FC<{
   label?: string;
   value?: any;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+<<<<<<< HEAD
   type:
+=======
+  type?:
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
     | "text"
     | "checkbox"
     | "checkbox"
@@ -152,7 +176,11 @@ const TextInput: React.FC<{
     | "tel"
     | "date"
     | "number"
+<<<<<<< HEAD
     | "submit";
+=======
+    | any;
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
   icon?: React.ReactNode;
   placeholder?: string;
   hideLabel?: any;
@@ -161,6 +189,7 @@ const TextInput: React.FC<{
   min?: any;
   max?: any;
   required?: any;
+  onBlur?: any;
 }> = ({
   showIcon,
   label,
@@ -230,28 +259,78 @@ const TextInput: React.FC<{
 
 // RegistrationForm Component
 
-type Props = {
+interface MyFormValues {
   firstName: string;
   lastName: string;
-  platform: string;
-  isChecked: boolean;
-  Telephone: string | number | any;
-  Email: string;
+  email: string;
+  location: {
+    city: any;
+    country: any;
+    state: any;
+  };
+  platform: "";
+  Telephone: any;
   Address: string;
-  "Date of Birth": any;
-};
+  "Date of Birth": {};
+  isChecked: boolean;
+}
 const RegistrationForm: React.FC = () => {
-  const [formData, setFormData] = useState<Props>({
+  const [checkBoxvalues] = React.useState([
+    "A Friend or colleague",
+    "Google",
+    "Article News",
+    "Blog Post",
+    "Other",
+  ]);
+  const initialValues: MyFormValues = {
     firstName: "",
     lastName: "",
+    email: "",
+    location: {
+      city: "",
+      country: "",
+      state: "",
+    },
     platform: "",
-    isChecked: false,
     Telephone: "",
-    Email: "",
     Address: "",
     "Date of Birth": "",
+    isChecked: false,
+  };
+
+  let validationSchema = Yup.object({
+    firstName: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+    lastName: Yup.string()
+      .max(20, "Must be 20 characters or less")
+      .required("Required"),
+    email: Yup.string().email("Invalid email address").required("Required"),
+    location: Yup.object().shape({
+      city: Yup.string().required("city is required"),
+      country: Yup.string().required("country is required"),
+      state: Yup.string().required("state is required"),
+    }),
+
+    Telephone: Yup.string()
+      .required("number is required")
+      .max(10, "must not be greater than 10"),
+
+    isChecked: Yup.boolean().oneOf([true], "Must be checked "),
+    Address: Yup.string().required("address is required "),
+    "Date of Birth": Yup.string().required("please enter Date"),
+    // platform: Yup.object().shape({
+    //   checkBoxvalues: Yup.array().min(1).of(Yup.string().required()),
+    // }),
+
+    // platform: Yup.string().required("please select platform "),
+
+    platform: Yup.string()
+      .required("Must Accept Terms and Conditions")
+      .oneOf([...checkBoxvalues], "Must Accept Terms and Conditions"),
   });
 
+<<<<<<< HEAD
   // const [startDate, setStartDate] = useState(new Date());
 
   const [error, setError] = useState<any>({});
@@ -359,18 +438,25 @@ const RegistrationForm: React.FC = () => {
               hideLabel
             />
           </FlexContainer>
+=======
+  return (
+    <>
+      {/* {submitting ? <p>form submitted</p> : null} */}
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
 
-          <div style={{ display: "flex", gap: "10px" }}>
-            {Object.keys(error).length > 0 && error.firstName !== "" && (
-              <StyledEror errorMesage={error.firstName} />
-            )}
-            {Object.keys(error).length > 0 && (
-              <StyledEror errorMesage={error.lastName} />
-            )}
-          </div>
-          {/* <StyledError style={{}}>{error.firstName}</StyledError> */}
-        </Container>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log("Sumitted");
+          console.log(values);
+        }}
+      >
+        {(formik) => {
+          return (
+            // strory start
 
+<<<<<<< HEAD
         <Container label="2.E-mail">
           <TextInput
             label={"E-mail"}
@@ -444,16 +530,130 @@ const RegistrationForm: React.FC = () => {
             "Blog Post",
             "Other",
           ].map((v) => (
+=======
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
             <>
-              <TextInput
-                label={v}
-                value={v}
-                id={v}
-                onChange={handelChange}
-                type="radio"
-                name="platform"
-              />
+              {console.log(formik)}
+              <FormContainer onSubmit={formik.handleSubmit}>
+                <pre>{JSON.stringify(formik.values)}</pre>
+                <Container label="Name">
+                  <FlexContainer>
+                    <TextInput
+                      placeholder="First Name"
+                      type="text"
+                      label="Name"
+                      name="firstName"
+                      value={formik.values.firstName}
+                      onChange={formik.handleChange}
+                    />
+                    <TextInput
+                      value={formik.values.lastName}
+                      onChange={formik.handleChange}
+                      placeholder="Last Name"
+                      type="text"
+                      name="lastName" // onBlur={formik.handleBlur}
+                      hideLabel
+                    />
+                  </FlexContainer>
+                  <ErrorMessage name="lastName">
+                    {(msg) => <StyledError name={msg}>{msg}</StyledError>}
+                  </ErrorMessage>
+                  {/* <ErrorMessage component={StyledError} name="lastName" /> */}
+                </Container>
+
+                <Container label="E-mail">
+                  <TextInput
+                    label={"E-mail"}
+                    onChange={formik.handleChange}
+                    type="text"
+                    name="email"
+                    icon={<AiOutlineMail />}
+                    placeholder="E-mail"
+                  />
+                  <ErrorMessage component="div" name="email" />
+                </Container>
+                <Container label="Location">
+                  <Location formik={formik}></Location>
+                </Container>
+                <Container label="Telephone">
+                  <TextInput
+                    label="Telephone"
+                    onChange={formik.handleChange}
+                    type="tel"
+                    name="Telephone"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Telephone"
+                  />
+                  <ErrorMessage component="div" name="Telephone" />
+                </Container>
+
+                <Container label="4.Address">
+                  <TextInput
+                    label="Address"
+                    onChange={formik.handleChange}
+                    type="text"
+                    name="Address"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Address"
+                  />
+
+                  <ErrorMessage component="div" name="Address" />
+                </Container>
+
+                <Container label=" 5.Date of Birth">
+                  <TextInput
+                    label="Date of Birth"
+                    onChange={formik.handleChange}
+                    type="date"
+                    name="Date of Birth"
+                    // icon={<AiOutlineCheck />}
+                    placeholder="Date of Birth"
+                  />
+                  <ErrorMessage component="div" name="Date of Birth" />
+                </Container>
+
+                <Container
+                  label="6.
+Where did you hear about us?"
+                >
+                  {checkBoxvalues.map((v) => (
+                    <>
+                      <TextInput
+                        label={v}
+                        value={v}
+                        id={v}
+                        onChange={formik.handleChange}
+                        type="radio"
+                        name="platform"
+                      />
+                    </>
+                  ))}
+
+                  <ErrorMessage component="div" name="platform" />
+                </Container>
+
+                <Container>
+                  <TextInput
+                    placeholder="First Name"
+                    value={formik.values.isChecked}
+                    onChange={formik.handleChange}
+                    type="checkbox"
+                    name="isChecked"
+                    id="checkbox-id" // Add a unique id for the checkbox
+                    label="I have read, understood, and accepted the PRIVACY POLICY for membership. "
+                  />
+
+                  <ErrorMessage component="div" name="isChecked" />
+                </Container>
+
+                <TextInput
+                  placeholder="submit"
+                  type="submit"
+                  name="lastName" // onBlur={formik.handleBlur}
+                />
+              </FormContainer>
             </>
+<<<<<<< HEAD
           ))}
 
           {Object.keys(error).length > 0 && (
@@ -481,6 +681,12 @@ const RegistrationForm: React.FC = () => {
           <SubmitButton type="submit">Submit</SubmitButton>
         </Container>
       </FormContainer>
+=======
+            //start of the form
+          );
+        }}
+      </Formik>
+>>>>>>> 09cc3f7fae5af368cfed423afcfece74356fdb58
     </>
   );
 };
